@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   flutter_circle_color_picker: ^0.2.0
   flutter_bluetooth_serial: 
+  flutter_blue: 
 
 dev_dependencies:
   flutter_test:
