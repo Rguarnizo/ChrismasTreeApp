@@ -1,5 +1,8 @@
+import 'package:chrismas_tree_app/pages/manage_bluetooth_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+
+
 
  
 void main() => runApp(MyApp());
@@ -9,14 +12,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chrismass Tree App',
-      home: Scaffold(
-        body: Center(
-          child: Container(
-            child: CircleColorPicker(
-              onChanged: (value) => print('R: ${value.red}  G: ${value.green}  B: ${value.blue}  '),
-            ),
-          ),
-        ),
+      home: StreamBuilder<BluetoothState>(
+        stream: FlutterBlue.instance.state,
+        builder: (_,state){
+
+          if(state.data == BluetoothState.on)
+            return ManageBluetoothPage();
+          return Container();
+
+        },
       )
     );
   }
