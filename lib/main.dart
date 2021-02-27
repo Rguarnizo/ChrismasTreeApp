@@ -1,3 +1,4 @@
+import 'package:chrismas_tree_app/pages/home_page.dart';
 import 'package:chrismas_tree_app/pages/manage_bluetooth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -12,13 +13,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chrismass Tree App',
+      debugShowCheckedModeBanner: false,
       home: StreamBuilder<BluetoothState>(
         stream: FlutterBlue.instance.state,
         builder: (_,state){
 
           if(state.data == BluetoothState.on)
+            return HomePage();
+            
             return ManageBluetoothPage();
-          return Container();
 
         },
       )

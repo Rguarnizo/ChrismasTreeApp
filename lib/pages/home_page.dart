@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -6,9 +7,56 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('Hola Mundo'),
-     ),
+      backgroundColor: Colors.blueGrey[800],
+      body: SafeArea(
+        child: Column(
+          
+          children: [
+            Text('Change Primary Color',style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold,color: Colors.white),),
+            _ChangePrimaryColor(),
+            Flexible(child: Container(),),
+            Text('Change Secondary Color',style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold,color: Colors.white),),
+            _ChangeSecondaryColor()
+            
+          ],
+        ),
+      )
    );
+  }
+}
+
+class _ChangeSecondaryColor extends StatelessWidget {
+  const _ChangeSecondaryColor({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+      children: [
+        CircleColorPicker(
+          colorCodeBuilder: (_,color) => Container(),
+
+        ),
+      ],
+    ));
+  }
+}
+
+class _ChangePrimaryColor extends StatelessWidget {
+  const _ChangePrimaryColor({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Column(
+      children: [
+        CircleColorPicker(
+          
+        ),
+      ],
+    ));
   }
 }
