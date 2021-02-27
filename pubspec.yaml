@@ -31,6 +31,8 @@ dependencies:
   flutter_circle_color_picker: ^0.2.0
   flutter_bluetooth_serial: 
   flutter_blue: 
+  bloc:
+  flutter_bloc:
 
 dev_dependencies:
   flutter_test:
