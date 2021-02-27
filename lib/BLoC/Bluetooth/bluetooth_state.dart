@@ -7,7 +7,9 @@ class BluetoothInitial extends BluetoothState {
 
 }
 
+class ScanResults extends BluetoothState{
+  final List<ScanResult> results;
 
-class BluetoothActualize extends BluetoothState{
-  
+  ScanResults(this.results);
+
 }

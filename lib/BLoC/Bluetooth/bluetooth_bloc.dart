@@ -17,8 +17,15 @@ class BluetoothBloc extends Bloc<BluetoothEvent, BluetoothState> {
     BluetoothEvent event,
   ) async* {
     
-    if(event is OnSendMessage) yield BluetoothInitial();
-
+    if(event is OnSendMessage)   yield BluetoothInitial();
+    if(event is GetScansResults) yield* _emitScansResults();
     
+  }
+
+  Stream<BluetoothState> _emitScansResults() async* {
+    
+    bluetooth.startScan(timeout: Duration(seconds: 10));
+    yield ScanResults(await bluetooth.scanResults.last);
+
   }
 }

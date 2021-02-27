@@ -10,5 +10,9 @@ class OnSendMessage extends BluetoothEvent{
 
   OnSendMessage(this.message);
 
+}
 
+
+class GetScansResults extends BluetoothEvent{
+  
 }
