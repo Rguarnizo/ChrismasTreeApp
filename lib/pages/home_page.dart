@@ -1,35 +1,27 @@
-import 'package:chrismas_tree_app/BLoC/Bluetooth/bluetooth_bloc.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    FlutterBlue.instance.startScan(timeout: Duration(seconds: 10));
     return Scaffold(
         appBar: AppBar(),
-        drawer: BlocProvider(
-          create: (_) => BluetoothBloc(),
-          child: Drawer(
-            child: BlocBuilder<BluetoothBloc, BluetoothState>(
-              builder: (context, state) {
-                BlocProvider.of<BluetoothBloc>(context).add(GetScansResults());
-                print(state);
-                return Column(
-                  children: state is ScanResults
-                      ? state.results.map((element) {
-                          final device = element.device;
-                          return ListTile(
-                            title: Text(device.name),
-                            subtitle: Text(device.id.toString()),
-                          );
-                        }).toList()
-                      : [Container()],
-                );
-              },
-            ),
-          ),
-        ),
+        drawer: Drawer(
+            child: StreamBuilder<List<ScanResult>>(
+          stream: FlutterBlue.instance.scanResults,
+          builder: (_, snapshot) {
+            return ListView(
+                children: snapshot.hasData
+                    ? snapshot.data.map((scan) => ListTile(
+                          title: Text(scan.device.name),
+                        )).toList()
+                    : []);
+          },
+        )),
         backgroundColor: Colors.blueGrey[800],
         body: SafeArea(
           child: Column(
