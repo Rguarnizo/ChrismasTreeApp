@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
             _ChangePrimaryColor(),
             Flexible(child: Container(),),
             Text('Change Secondary Color',style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold,color: Colors.white),),
-            _ChangeSecondaryColor()
+            _ChangeSecondaryColor(),
             
           ],
         ),
@@ -36,8 +36,9 @@ class _ChangeSecondaryColor extends StatelessWidget {
       child: Column(
       children: [
         CircleColorPicker(
-          colorCodeBuilder: (_,color) => Container(),
-
+          onChanged: (color)=> null,
+          strokeWidth: 5,
+          
         ),
       ],
     ));
@@ -54,6 +55,8 @@ class _ChangePrimaryColor extends StatelessWidget {
     return Center(child: Column(
       children: [
         CircleColorPicker(
+          strokeWidth: 5,
+          onChanged: (color)=> null,
           
         ),
       ],
