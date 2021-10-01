@@ -1,16 +1,8 @@
-# test_flutter
+# Christmas Tree App
 
-A new Flutter project.
+Application for colored control and patterns of a Christmas tree, Is communicated through Bluetooth and sends the information in JSON format through this.
 
-## Getting Started
+This application is made in Flutter, and the Christmas Tree Embedded System is made in C++, You can see the code of the Christmas tree in the next [Repository](https://github.com/Rguarnizo/ChristmasTree). 
 
-This project is a starting point for a Flutter application.
+To connect to the Bluetooth module, the [Flutter_Bluetooth_Serial](https://pub.dev/packages/flutter_bluetooth_serial) library was used.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
