@@ -84,6 +84,10 @@ class _HomePageState extends State<HomePage> {
                               .map((e) => ListTile(
                                     title: Text(e.device.name ?? "No name"),
                                     subtitle: Text(e.device.address),
+                                    onTap: () async {
+                                      String address = e.device.address;
+                                      await FlutterBluetoothSerial.instance.bondDeviceAtAddress(address);
+                                    }
                                   ))
                               .toList(),
                         ),
