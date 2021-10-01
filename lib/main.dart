@@ -48,103 +48,57 @@ class _HomePageState extends State<HomePage> {
     initialColor: Colors.blue,
   );
 
-  StreamSubscription<BluetoothDiscoveryResult>? _streamSubscription;
-  List<BluetoothDiscoveryResult> results =
-      List<BluetoothDiscoveryResult>.empty(growable: true);
   bool isDiscovering = false;
+  final StreamController<List<BluetoothDiscoveryResult>>
+      _deviceStreamController = StreamController();
+  final List<BluetoothDiscoveryResult> devicesList = [];
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _startDiscovery();
-  }
-
-  void _startDiscovery() {
-    _streamSubscription =
-        FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
-      setState(() {
-        isDiscovering = true;
-        final existingIndex = results.indexWhere(
-            (element) => element.device.address == r.device.address);
-        if (existingIndex >= 0)
-          results[existingIndex] = r;
-        else
-          results.add(r);
-      });
-    });
-
-    _streamSubscription!.onDone(() {
-      setState(() {
-        isDiscovering = false;
-      });
+    FlutterBluetoothSerial.instance.startDiscovery().asBroadcastStream().listen((event) {
+      devicesList.add(event);
+      print(event);
+      print(devicesList);
+      _deviceStreamController.add(devicesList);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
       appBar: AppBar(),
       drawer: Drawer(
-          child: isDiscovering? Text("Discovering"): ListView.builder(
-        itemBuilder: (context, index) {
-          BluetoothDiscoveryResult result = results[index];
-          final device = result.device;
-          final address = device.address;
-
-          return ListTile(
-            title: Text(device.name!),
-            subtitle: Text(device.address),
-            onTap: () async {
-              try {
-                bool bonded = false;
-                if (device.isBonded) {
-                  print('Unbonding from ${device.address}...');
-                  await FlutterBluetoothSerial.instance
-                      .removeDeviceBondWithAddress(address);
-                  print('Unbonding from ${device.address} has succed');
-                } else {
-                  print('Bonding with ${device.address}...');
-                  bonded = (await FlutterBluetoothSerial.instance
-                      .bondDeviceAtAddress(address))!;
-                  print(
-                      'Bonding with ${device.address} has ${bonded ? 'succed' : 'failed'}.');
-                }
-                setState(() {
-                  results[results.indexOf(result)] = BluetoothDiscoveryResult(
-                      device: BluetoothDevice(
-                        name: device.name ?? '',
-                        address: address,
-                        type: device.type,
-                        bondState: bonded
-                            ? BluetoothBondState.bonded
-                            : BluetoothBondState.none,
-                      ),
-                      rssi: result.rssi);
-                });
-              } catch (ex) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                          title: const Text('Error occured while bonding'),
-                          content: Text("${ex.toString()}"),
-                          actions: <Widget>[
-                             TextButton(
-                              child:Text("Close"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ]);
-                    });
-              }
-            },
-          );
-        },
-        itemCount: results.length,
-      )),
+          child: isDiscovering
+              ? Text("Discovering")
+              : StreamBuilder<List<BluetoothDiscoveryResult>>(
+                  stream: _deviceStreamController.stream.asBroadcastStream(),
+                  builder: (context, snapshot) {
+                    List<BluetoothDiscoveryResult>? devices = snapshot.data;
+                    print(devices);
+                    if (devices != null) {
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: devices
+                              .map((e) => ListTile(
+                                    title: Text(e.device.name ?? "No name"),
+                                    subtitle: Text(e.device.address),
+                                  ))
+                              .toList(),
+                        ),
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          Text("Discovering devices"),
+                          Icon(Icons.bluetooth)
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                      );
+                    }
+                  })),
       backgroundColor: _currentColor,
       body: Center(
         child: CircleColorPicker(
