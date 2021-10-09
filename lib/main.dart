@@ -49,19 +49,18 @@ class _HomePageState extends State<HomePage> {
   );
 
   bool isDiscovering = false;
-  final StreamController<List<BluetoothDiscoveryResult>>
-      _deviceStreamController = StreamController();
-  final List<BluetoothDiscoveryResult> devicesList = [];
+  String? deviceAdress;
+  List<BluetoothDiscoveryResult> devices = [];
+  BluetoothConnection? connection;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    FlutterBluetoothSerial.instance.startDiscovery().asBroadcastStream().listen((event) {
-      devicesList.add(event);
-      print(event);
-      print(devicesList);
-      _deviceStreamController.add(devicesList);
+    FlutterBluetoothSerial.instance.startDiscovery().listen((btDev) {
+      setState(() {
+        devices.add(btDev);
+      });
     });
   }
 
@@ -70,45 +69,45 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(),
       drawer: Drawer(
-          child: isDiscovering
-              ? Text("Discovering")
-              : StreamBuilder<List<BluetoothDiscoveryResult>>(
-                  stream: _deviceStreamController.stream.asBroadcastStream(),
-                  builder: (context, snapshot) {
-                    List<BluetoothDiscoveryResult>? devices = snapshot.data;
-                    print(devices);
-                    if (devices != null) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: devices
-                              .map((e) => ListTile(
-                                    title: Text(e.device.name ?? "No name"),
-                                    subtitle: Text(e.device.address),
-                                    onTap: () async {
-                                      String address = e.device.address;
-                                      await FlutterBluetoothSerial.instance.bondDeviceAtAddress(address);
-                                    }
-                                  ))
-                              .toList(),
-                        ),
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          Text("Discovering devices"),
-                          Icon(Icons.bluetooth)
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                      );
-                    }
-                  })),
+          child: SingleChildScrollView(
+        child: Column(
+          children: devices
+              .map((e) => Container(
+                  color: e.device.isConnected ? Colors.green : Colors.blue,
+                  child: ListTile(
+                      title: Text(e.device.name ?? "No name"),
+                      subtitle: Text(e.device.address),
+                      onTap: () async {
+                        if (!e.device.isConnected) {
+                          await FlutterBluetoothSerial.instance
+                              .bondDeviceAtAddress(e.device.address);
+                          connection = await BluetoothConnection.toAddress(
+                              e.device.address);
+                        } else {
+                          await FlutterBluetoothSerial.instance
+                              .removeDeviceBondWithAddress(e.device.address);
+                        }
+                      })))
+              .toList(),
+        ),
+      )),
       backgroundColor: _currentColor,
       body: Center(
         child: CircleColorPicker(
           controller: _controller,
           onChanged: (color) => setState(() {
             _currentColor = color;
+            connection?.output.add(ascii.encode(json.encode(
+          {
+            "Colors": {
+              "Red": color.red,
+              "Green": color.green,
+              "Blue": color.blue
+            },
+            "Strip": 1,
+            "Pattern": 2
+          }
+            )));
           }),
           size: const Size(240, 240),
           strokeWidth: 4,
