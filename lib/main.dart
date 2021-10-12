@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
-
+import 'package:ChristmasTreeApp/helpers/data_change.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -97,17 +97,7 @@ class _HomePageState extends State<HomePage> {
           controller: _controller,
           onChanged: (color) => setState(() {
             _currentColor = color;
-            connection?.output.add(ascii.encode(json.encode(
-          {
-            "Colors": {
-              "Red": color.red,
-              "Green": color.green,
-              "Blue": color.blue
-            },
-            "Strip": 1,
-            "Pattern": 2
-          }
-            )));
+            connection?.output.add(dataComing(color: color));
           }),
           size: const Size(240, 240),
           strokeWidth: 4,
