@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ChristmasTreeApp/helpers/data_change.dart';
+import 'package:ChristmasTreeApp/pages/bluetooth_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      routes: {
+        'BluetoothConfig': (BuildContext) => BluetoothPage(),
+      },
     );
   }
 }
@@ -93,15 +97,29 @@ class _HomePageState extends State<HomePage> {
       )),
       backgroundColor: _currentColor,
       body: Center(
-        child: CircleColorPicker(
-          controller: _controller,
-          onChanged: (color) => setState(() {
-            _currentColor = color;
-            connection?.output.add(dataComing(color: color));
-          }),
-          size: const Size(240, 240),
-          strokeWidth: 4,
-          thumbSize: 36,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleColorPicker(
+                controller: _controller,
+                onChanged: (color) => setState(() {
+                  _currentColor = color;
+                  connection?.output.add(dataComing(color: color));
+                }),
+                size: const Size(240, 240),
+                strokeWidth: 4,
+                thumbSize: 36,
+              ),
+              ColorPicker(
+                  onColorChanged: (color) => setState(() {
+                        _currentColor = color;
+                        connection?.output.add(dataComing(color: color));
+                      })),
+              IconButton(onPressed: () => {
+                Navigator.of(context).pushNamed("BluetoothConfig"),
+              }, icon: Icon(Icons.bluetooth))
+            ],
+          ),
         ),
       ),
     );
