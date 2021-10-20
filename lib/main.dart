@@ -98,28 +98,20 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: _currentColor,
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CircleColorPicker(
-                controller: _controller,
-                onChanged: (color) => setState(() {
-                  _currentColor = color;
-                  connection?.output.add(dataComing(color: color));
-                }),
-                size: const Size(240, 240),
-                strokeWidth: 4,
-                thumbSize: 36,
-              ),
+          child: 
               ColorPicker(
-                  onColorChanged: (color) => setState(() {
-                        _currentColor = color;
-                        connection?.output.add(dataComing(color: color));
-                      })),
-              IconButton(onPressed: () => {
-                Navigator.of(context).pushNamed("BluetoothConfig"),
-              }, icon: Icon(Icons.bluetooth))
-            ],
-          ),
+                  pickersEnabled: const <ColorPickerType, bool>{
+                    ColorPickerType.both: true,
+                    ColorPickerType.primary: true,
+                    ColorPickerType.accent: true,
+                    ColorPickerType.bw: true,
+                    ColorPickerType.custom: true,
+                    ColorPickerType.wheel: true,
+                  },
+                  onColorChanged: (color) => connection?.output.add(dataComing(color: color))
+                      ),
+            
+          
         ),
       ),
     );
