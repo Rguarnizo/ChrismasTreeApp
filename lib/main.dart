@@ -105,9 +105,6 @@ class _HomePageState extends State<HomePage> {
                         _currentColor = color;
                         connection?.output.add(dataComing(color: color));
                       })),
-              IconButton(onPressed: () => {
-                Navigator.of(context).pushNamed("BluetoothConfig"),
-              }, icon: Icon(Icons.bluetooth))
             ],
           ),
         ),
