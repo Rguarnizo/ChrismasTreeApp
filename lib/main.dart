@@ -98,15 +98,20 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: _currentColor,
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
+          child: 
               ColorPicker(
-                  onColorChanged: (color) => setState(() {
-                        _currentColor = color;
-                        connection?.output.add(dataComing(color: color));
-                      })),
-            ],
-          ),
+                  pickersEnabled: const <ColorPickerType, bool>{
+                    ColorPickerType.both: true,
+                    ColorPickerType.primary: true,
+                    ColorPickerType.accent: true,
+                    ColorPickerType.bw: true,
+                    ColorPickerType.custom: true,
+                    ColorPickerType.wheel: true,
+                  },
+                  onColorChanged: (color) => connection?.output.add(dataComing(color: color))
+                      ),
+            
+          
         ),
       ),
     );
