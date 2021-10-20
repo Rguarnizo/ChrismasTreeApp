@@ -100,16 +100,6 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              CircleColorPicker(
-                controller: _controller,
-                onChanged: (color) => setState(() {
-                  _currentColor = color;
-                  connection?.output.add(dataComing(color: color));
-                }),
-                size: const Size(240, 240),
-                strokeWidth: 4,
-                thumbSize: 36,
-              ),
               ColorPicker(
                   onColorChanged: (color) => setState(() {
                         _currentColor = color;
