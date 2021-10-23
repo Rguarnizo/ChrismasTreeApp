@@ -110,8 +110,6 @@ class _HomePageState extends State<HomePage> {
                   },
                   onColorChanged: (color) => connection?.output.add(dataComing(color: color))
                       ),
-            
-          
         ),
       ),
     );
