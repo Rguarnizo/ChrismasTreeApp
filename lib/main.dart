@@ -102,10 +102,10 @@ class _HomePageState extends State<HomePage> {
               ColorPicker(
                   pickersEnabled: const <ColorPickerType, bool>{
                     ColorPickerType.both: true,
-                    ColorPickerType.primary: true,
-                    ColorPickerType.accent: true,
-                    ColorPickerType.bw: true,
-                    ColorPickerType.custom: true,
+                    ColorPickerType.primary: false,
+                    ColorPickerType.accent: false,
+                    ColorPickerType.bw: false,
+                    ColorPickerType.custom: false,
                     ColorPickerType.wheel: true,
                   },
                   onColorChanged: (color) => connection?.output.add(dataComing(color: color))
