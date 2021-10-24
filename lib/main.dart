@@ -72,47 +72,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: Drawer(
-          child: StreamBuilder<BluetoothState>(
-              stream: FlutterBluetoothSerial.instance.onStateChanged(),
-              builder: (context, snapshot) {
-                BluetoothState? state = snapshot.data;
-                if (state == BluetoothState.STATE_ON) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: devices
-                          .map((e) => Container(
-                              color: e.device.isConnected
-                                  ? Colors.green
-                                  : Colors.blue,
-                              child: ListTile(
-                                  title: Text(e.device.name ?? "No name"),
-                                  subtitle: Text(e.device.address),
-                                  onTap: () async {
-                                    if (!e.device.isConnected) {
-                                      await FlutterBluetoothSerial.instance
-                                          .bondDeviceAtAddress(
-                                              e.device.address);
-                                      connection =
-                                          await BluetoothConnection.toAddress(
-                                              e.device.address);
-                                    } else {
-                                      await FlutterBluetoothSerial.instance
-                                          .removeDeviceBondWithAddress(
-                                              e.device.address);
-                                    }
-                                  })))
-                          .toList(),
-                    ),
-                  );
-                } else {
-                  return Center(
-                      child: IconButton(
-                          onPressed: () => {},
-                          icon: const Icon(Icons.bluetooth),
-                          ));
-                }
-              })),
+      drawer: MainDrawer(connection: connection,devices: devices,),
       backgroundColor: _currentColor,
       body: Center(
         child: SingleChildScrollView(
@@ -130,5 +90,66 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+class MainDrawer extends StatefulWidget {
+  List<BluetoothDiscoveryResult>? devices;
+  BluetoothConnection? connection;
+  MainDrawer(
+      {Key? key,
+      @required this.devices,
+      @required this.connection
+      })
+      : super(key: key);
+
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+        child: StreamBuilder<BluetoothState>(
+            stream: FlutterBluetoothSerial.instance.onStateChanged(),
+            builder: (context, snapshot) {
+              BluetoothState? state = snapshot.data;
+              if (state == BluetoothState.STATE_ON) {
+                List<BluetoothDiscoveryResult>? data = widget.devices;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: data
+                        !.map((e) => Container(
+                            color: e.device.isConnected
+                                ? Colors.green
+                                : Colors.blue,
+                            child: ListTile(
+                                title: Text(e.device.name ?? "No name"),
+                                subtitle: Text(e.device.address),
+                                onTap: () async {
+                                  if (!e.device.isConnected) {
+                                    await FlutterBluetoothSerial.instance
+                                        .bondDeviceAtAddress(e.device.address);
+                                    widget.connection =
+                                        await BluetoothConnection.toAddress(
+                                            e.device.address);
+                                  } else {
+                                    await FlutterBluetoothSerial.instance
+                                        .removeDeviceBondWithAddress(
+                                            e.device.address);
+                                  }
+                                })))
+                        .toList(),
+                  ),
+                );
+              } else {
+                return Center(
+                    child: IconButton(
+                  onPressed: () => {},
+                  icon: const Icon(Icons.bluetooth),
+                ));
+              }
+            }));
   }
 }
