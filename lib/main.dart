@@ -11,6 +11,17 @@ void main() {
   runApp(const MyApp());
 }
 
+enum Pattern {
+    goBackOneColor,
+    goBackColors,
+    maintainIncrese,
+    maintainDecrese,
+    oddPairsNotSimultaneous,
+    rainbow,
+    rainbowCycle,
+    oneByOne,
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -76,17 +87,22 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: _currentColor,
       body: Center(
         child: SingleChildScrollView(
-          child: ColorPicker(
-              pickersEnabled: const <ColorPickerType, bool>{
-                ColorPickerType.both: true,
-                ColorPickerType.primary: false,
-                ColorPickerType.accent: false,
-                ColorPickerType.bw: false,
-                ColorPickerType.custom: false,
-                ColorPickerType.wheel: true,
-              },
-              onColorChanged: (color) =>
-                  connection?.output.add(dataComing(color: color))),
+          child: Column(
+            children: [
+              ColorPicker(
+                  pickersEnabled: const <ColorPickerType, bool>{
+                    ColorPickerType.both: true,
+                    ColorPickerType.primary: false,
+                    ColorPickerType.accent: false,
+                    ColorPickerType.bw: false,
+                    ColorPickerType.custom: false,
+                    ColorPickerType.wheel: true,
+                  },
+                  onColorChanged: (color) =>
+                      connection?.output.add(dataComing(color: color))),
+                  
+            ],
+          ),
         ),
       ),
     );
