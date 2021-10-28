@@ -11,17 +11,6 @@ void main() {
   runApp(const MyApp());
 }
 
-enum Pattern {
-    goBackOneColor,
-    goBackColors,
-    maintainIncrese,
-    maintainDecrese,
-    oddPairsNotSimultaneous,
-    rainbow,
-    rainbowCycle,
-    oneByOne,
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -67,6 +56,16 @@ class _HomePageState extends State<HomePage> {
   String? deviceAdress;
   List<BluetoothDiscoveryResult> devices = [];
   BluetoothConnection? connection;
+  List<String> patterns = [
+    "goBackOneColor",
+    "goBackColors",
+    "maintainIncrese",
+    "maintainDecrese",
+    "oddPairsNotSimultaneous",
+    "rainbow",
+    "rainbowCycle",
+    "oneByOne",
+  ];
 
   @override
   void initState() {
@@ -83,7 +82,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: MainDrawer(connection: connection,devices: devices,),
+      drawer: MainDrawer(
+        connection: connection,
+        devices: devices,
+      ),
       backgroundColor: _currentColor,
       body: Center(
         child: SingleChildScrollView(
@@ -100,7 +102,13 @@ class _HomePageState extends State<HomePage> {
                   },
                   onColorChanged: (color) =>
                       connection?.output.add(dataComing(color: color))),
-                  
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, i) => 
+                      ListTile(title: Text(patterns[i])),
+                  itemCount: patterns.length,
+                ),
+              )
             ],
           ),
         ),
@@ -112,11 +120,7 @@ class _HomePageState extends State<HomePage> {
 class MainDrawer extends StatefulWidget {
   List<BluetoothDiscoveryResult>? devices;
   BluetoothConnection? connection;
-  MainDrawer(
-      {Key? key,
-      @required this.devices,
-      @required this.connection
-      })
+  MainDrawer({Key? key, @required this.devices, @required this.connection})
       : super(key: key);
 
   @override
@@ -135,8 +139,8 @@ class _MainDrawerState extends State<MainDrawer> {
                 List<BluetoothDiscoveryResult>? data = widget.devices;
                 return SingleChildScrollView(
                   child: Column(
-                    children: data
-                        !.map((e) => Container(
+                    children: data!
+                        .map((e) => Container(
                             color: e.device.isConnected
                                 ? Colors.green
                                 : Colors.blue,
